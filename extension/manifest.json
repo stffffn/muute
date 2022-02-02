@@ -1,0 +1,37 @@
+{
+  "name": "muute",
+  "description": "Global shortcuts for Google Meet",
+  "version": "0.1",
+  "manifest_version": 3,
+  "icons": {
+    "128": "icons/icon.png"
+  },
+  "permissions": ["tabs"],
+  "content_scripts": [
+    {
+      "js": ["src/content.js"],
+      "matches": ["https://meet.google.com/*"]
+    }
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "commands": {
+    "toggleMic": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+8",
+        "mac": "Command+Shift+8"
+      },
+      "description": "Turn your microphone on or off.",
+      "global": true
+    },
+    "toggleCam": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+9",
+        "mac": "Command+Shift+9"
+      },
+      "description": "Turn your camera on or off.",
+      "global": true
+    }
+  }
+}

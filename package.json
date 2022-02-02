@@ -1,0 +1,15 @@
+{
+  "name": "muute",
+  "version": "0.0.1",
+  "description": "Extension for Chrome based browsers for global shortcuts in Google Meet",
+  "scripts": {
+    "start": "web-ext run --target=chromium --source-dir=./extension --start-url=https://meet.google.com/",
+    "build": "web-ext build --source-dir=extension --artifacts-dir=build"
+  },
+  "author": "stffffn",
+  "license": "GPLv3",
+  "devDependencies": {
+    "@types/chrome": "^0.0.176",
+    "web-ext": "^6.6.0"
+  }
+}
