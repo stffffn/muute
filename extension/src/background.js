@@ -1,6 +1,8 @@
-chrome.commands.onCommand.addListener((cmd) => {
-  console.log(cmd);
+const sendMessage = (tabId, cmd) => {
+  chrome.tabs.sendMessage(tabId, cmd);
+};
 
+chrome.commands.onCommand.addListener((cmd) => {
   chrome.tabs.query({ url: 'https://meet.google.com/*' }).then((tabs) => {
     tabs.forEach((tab) => {
       sendMessage(tab.id, cmd);
@@ -8,16 +10,14 @@ chrome.commands.onCommand.addListener((cmd) => {
   });
 });
 
-const sendMessage = (tabId, cmd) => {
-  chrome.tabs.sendMessage(tabId, cmd);
-};
-
 chrome.runtime.onMessage.addListener((msg) => {
-  if (msg?.icon) {
-    console.log(msg.icon);
+  let path = '';
 
-    /**
-     * ICONS HIER SETZEN
-     */
+  if (msg.icon) {
+    path = `/icons/icon-${msg.icon}.png`;
+  } else {
+    path = '/icons/icon.png';
   }
+
+  chrome.action.setIcon({ path });
 });

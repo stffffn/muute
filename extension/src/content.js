@@ -9,12 +9,10 @@ var micButtonState;
 var camButtonState;
 
 const getButtonElements = () => {
-  const observer = new MutationObserver(() => {
+  const buttonObserver = new MutationObserver(() => {
     micButton = document.querySelector(MIC_BUTTON_SELECTOR);
-    console.log(micButton);
 
     camButton = document.querySelector(CAM_BUTTON_SELECTOR);
-    console.log(camButton);
 
     if (micButton && camButton) {
       micButtonState = micButton.getAttribute(STATE_SELECTOR) === 'true';
@@ -25,15 +23,17 @@ const getButtonElements = () => {
       observeMuteAttributeChange(micButton);
       observeMuteAttributeChange(camButton);
 
-      observer.disconnect();
+      observeBodyChange();
+
+      buttonObserver.disconnect();
     }
   });
 
-  observer.observe(document.body, { childList: true });
+  buttonObserver.observe(document.body, { childList: true });
 };
 
 const observeMuteAttributeChange = (element) => {
-  const observer = new MutationObserver((mutations) => {
+  const buttonAttributeObserver = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       const newValue = mutation.target.getAttribute(STATE_SELECTOR) === 'true';
       const oldValue = mutation.oldValue === 'true';
@@ -50,9 +50,21 @@ const observeMuteAttributeChange = (element) => {
     });
   });
 
-  observer.observe(element, {
+  buttonAttributeObserver.observe(element, {
     attributes: true,
     attributeFilter: [STATE_SELECTOR],
+    attributeOldValue: true,
+  });
+};
+
+const observeBodyChange = () => {
+  const bodyChangeObserver = new MutationObserver(() => {
+    chrome.runtime.sendMessage({ disconnect: true });
+  });
+
+  bodyChangeObserver.observe(document.body, {
+    attributes: true,
+    attributeFilter: ['jsaction'],
     attributeOldValue: true,
   });
 };
@@ -73,14 +85,10 @@ const setIconState = () => {
   chrome.runtime.sendMessage({ icon: iconState });
 };
 
-getButtonElements();
-
 chrome.runtime.onMessage.addListener((data) => {
   if (!micButton || !camButton) {
     return;
   }
-
-  console.log(data);
 
   switch (data) {
     case 'toggleMic':
@@ -93,3 +101,9 @@ chrome.runtime.onMessage.addListener((data) => {
       break;
   }
 });
+
+window.onbeforeunload = () => {
+  chrome.runtime.sendMessage({ disconnect: true });
+};
+
+getButtonElements();
