@@ -1,7 +1,7 @@
 {
   "name": "muute",
   "description": "Global keyboard shortcuts for Google Meet",
-  "version": "0.1",
+  "version": "0.1.0",
   "manifest_version": 3,
   "icons": {
     "128": "icons/icon.png"
