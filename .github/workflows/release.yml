@@ -1,0 +1,33 @@
+name: Release New Version
+on:
+  push:
+    tags:
+      - v*
+jobs:
+  release-new-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Install
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Rename
+        run: mv build/*.zip build/muute-${{github.ref_name}}.zip
+      - name: Changelog
+        id: changelog
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          version: ${{github.ref_name}}
+          path: CHANGELOG.md
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: muute ${{github.ref_name}}
+          files: build/muute-${{github.ref_name}}.zip
+          body: ${{ steps.changelog.outputs.changes }}
