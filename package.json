@@ -10,6 +10,6 @@
   "license": "GPLv3",
   "devDependencies": {
     "@types/chrome": "^0.0.176",
-    "web-ext": "^6.6.0"
+    "web-ext": "^7.1.1"
   }
 }
